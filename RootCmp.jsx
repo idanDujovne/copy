@@ -1,5 +1,7 @@
 import { ContactIndex } from "./pages/ContactIndex.jsx"
 
+import { ContactDetails } from "./pages/ContactDetails.jsx"
+
 const { Routes, Route } = ReactRouterDOM
 
 export function RootCmp() {
@@ -10,6 +12,7 @@ export function RootCmp() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<ContactIndex />} />
+                    <Route path="/contact/:contactId" element={<ContactDetails/>} />
                 </Routes>
             </main>
         </section>
