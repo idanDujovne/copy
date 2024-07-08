@@ -1,6 +1,6 @@
-import { utilService } from './util.service.js'
-import { storageService } from './async-storage.service.js'
-import { userService } from './user.service.js'
+import { storageService } from "./async-storage.service.js"
+import { utilService } from "./util.service.js"
+
 
 const CONTACT_KEY = 'contactDB'
 const PAGE_SIZE = 3
@@ -14,8 +14,7 @@ export const contactService = {
     getEmptyContact,
     getDefaultFilter,
     getFilterFromSearchParams,
-    getImportanceStats,
-    getDoneContactsPercent
+
 }
 // For Debug (easy access from console):
 window.cs = contactService
@@ -33,15 +32,9 @@ function query(filterBy = {}) {
                 contacts = contacts.filter(contact => contact.phone >= filterBy.phone)
             }
 
-            if (filterBy.isDone !== 'all') {
-                contacts = contacts.filter((contact) => (filterBy.isDone === 'done' ? contact.isDone : !contact.isDone))
-            }
-
             if (filterBy.sort) {
                 if (filterBy.sort === 'fullName') {
                     contacts = contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
-                } else {
-                    contacts = contacts.sort((a, b) => a.createdAt - b.createdAt);
                 }
             }
 
@@ -50,11 +43,10 @@ function query(filterBy = {}) {
                 const startIdx = filterBy.pageIdx * PAGE_SIZE;
                 contacts = contacts.slice(startIdx, startIdx + PAGE_SIZE)
             }
-            return Promise.all([getDoneContactsPercent(), getMaxPage(filteredContactsLength)])
-                .then(([doneContactsPercent, maxPage]) => {
-                    return { contacts, maxPage, doneContactsPercent }
+            return Promise.all(getMaxPage(filteredContactsLength))
+                .then(maxPage => {
+                    return { contacts, maxPage }
                 })
-
         })
 }
 
@@ -73,9 +65,9 @@ function get(contactId) {
 function remove(contactId) {
     return storageService.remove(CONTACT_KEY, contactId)
         .then(() => {
-            return Promise.all([getDoneContactsPercent(), getMaxPage()])
-                .then(([doneContactsPercent, maxPage]) => {
-                    return { maxPage, doneContactsPercent }
+            return Promise.all(getMaxPage())
+                .then((maxPage) => {
+                    return { maxPage }
                 })
         })
         .catch(err => {
@@ -85,32 +77,26 @@ function remove(contactId) {
 }
 
 function save(contact) {
-    if (!userService.getLoggedinUser()) return Promise.reject('User is not logged in')
     return ((contact._id) ? _edit(contact) : _add(contact))
         .then((savedContact) => {
-            return Promise.all([getDoneContactsPercent(), getMaxPage()])
-                .then(([doneContactsPercent, maxPage]) =>
-                    ({ maxPage, doneContactsPercent, savedContact })
+            return Promise.all(getMaxPage())
+                .then((maxPage) =>
+                    ({ maxPage, savedContact })
                 )
         })
 }
 
 function _add(contact) {
     contact = { ...contact }
-    contact.createdAt = contact.updatedAt = Date.now()
-    contact.color = utilService.getRandomColor()
     return storageService.post(CONTACT_KEY, contact)
         .catch(err => {
             console.error('Cannot add contact:', err)
             throw err
         })
-
-
 }
 
 function _edit(contact) {
     contact = { ...contact }
-    contact.updatedAt = Date.now()
     return storageService.put(CONTACT_KEY, contact)
         .catch(err => {
             console.error('Cannot update contact:', err)
@@ -118,18 +104,17 @@ function _edit(contact) {
         })
 }
 
-function getEmptyContact(fullName = '', phone = 5) {
-    return { fullName, phone, isDone: false }
+function getEmptyContact(fullName = '', phone = '050-44879546') {
+    return { fullName, phone }
 }
 
 function getDefaultFilter() {
-    return { fullName: '', isDone: 'all', phone: 0, pageIdx: 0, sort: '' }
+    return { fullName: '', phone: 0, pageIdx: 0, sort: '' }
 }
 
 function getFilterFromSearchParams(searchParams) {
     const filterBy = {
         fullName: searchParams.get('fullName') || '',
-        isDone: searchParams.get('isDone') || 'all',
         phone: +searchParams.get('phone') || 0,
         pageIdx: +searchParams.get('pageIdx') || 0,
         sort: searchParams.get('sort') || ''
@@ -152,7 +137,7 @@ function _createContacts() {
     let contacts = utilService.loadFromStorage(CONTACT_KEY)
     if (!contacts || !contacts.length) {
         contacts = []
-        const fullNames = ['Learn React', 'Master CSS', 'Practice Redux']
+        const fullNames = ['Omri', 'Idan', 'Yosi','Puki','Muki','Shuki']
         for (let i = 0; i < 8; i++) {
             const fullName = fullNames[utilService.getRandomIntInclusive(0, fullNames.length - 1)]
             contacts.push(_createContact(fullName + (i + 1), utilService.getRandomIntInclusive(1, 10)))
@@ -177,10 +162,4 @@ function _setNextPrevContactId(contact) {
         return contact
     })
 }
-
-// {
-//     _id:,
-//     fullName:,
-//     phone:,
-// }
 

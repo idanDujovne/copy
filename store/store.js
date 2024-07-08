@@ -1,4 +1,4 @@
-import { contactService } from "./services/contact.service.js"
+import { contactService } from "../services/contact.service.js"
 
 const { createStore, compose } = Redux
 
@@ -37,8 +37,6 @@ export function appReducer(state = initialState, action) {
                 ...state,
                 filterBy: { ...state.filterBy, ...action.filterBy }
             }
-        case SET_DONE_CONTACTS_PERCENT:
-            return { ...state, doneContactsPercent: action.doneContactsPercent }
         case SET_MAX_PAGE:
             return { ...state, maxPage: action.maxPage }
 
