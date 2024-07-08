@@ -26,7 +26,7 @@ export function AppFooter() {
         <footer  className='full'>
         {/* <footer style={getStyleByUser()} className='full'>
             {user && contacts &&
-                <section className="todos-progress">
+                <section className="contacts-progress">
                     <h3>you have finished {formattedPercent}</h3>
                     <div className="progress-bar-container" >
                         <span>{formattedPercent}</span>
