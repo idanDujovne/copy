@@ -14,7 +14,7 @@ export function ContactDetails() {
 
     useEffect(() => {
         loadContact()
-    }, [params.todoId])
+    }, [params.contactId])
 
 
     function loadContact() {
@@ -22,8 +22,8 @@ export function ContactDetails() {
             .then(setContact)
             .catch(err => {
                 console.error('err:', err)
-                showErrorMsg('Cannot load todo')
-                navigate('/todo')
+                showErrorMsg('Cannot load contact')
+                navigate('/contact')
             })
     }
 
