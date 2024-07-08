@@ -10,7 +10,7 @@ const { Routes, Route } = ReactRouterDOM
 export function RootCmp() {
 
     return (
-        <section className="app">
+        <section className="app main-layout">
             <AppHeader />
             <main>
                 <Routes>
