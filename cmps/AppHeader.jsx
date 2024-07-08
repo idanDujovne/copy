@@ -3,7 +3,7 @@ const { useSelector } = ReactRedux
 
 export function AppHeader() {
 
-    const contacts = useSelector((storeState) => storeState.contactModule.contacts)
+    const contacts = useSelector((storeState) => storeState.contacts)
 
     // function getStyleByUser() {
     //     const prefs = {}
@@ -24,7 +24,6 @@ export function AppHeader() {
                     <NavLink to="/contact" >Contacts</NavLink>
                 </nav>
             </section>
-            <UserMsg />
         </header>
     )
 }

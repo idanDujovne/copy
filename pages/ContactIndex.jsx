@@ -2,25 +2,27 @@ const { useEffect, useState } = React
 const { useSelector, useDispatch } = ReactRedux
 const { Link, useSearchParams } = ReactRouterDOM
 
+
 import { ContactFilter } from "../cmps/ContactFilter.jsx"
-import { ContactList } from "../cmps/ContactList.jsx"
-import { loadContacts, removeContact, saveContact } from '../store/actions/contact.actions.js'
-import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
+import { ContactList } from '../cmps/ContactList.jsx'
+import { loadContacts, removeContact, saveContact } from "../store/actions/contact.actions.js"
+import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { ContactSort } from '../cmps/ContactSort.jsx'
-import { contactService } from '../services/contact.service.js'
+import { contactService } from "../services/contact.service.js"
+import { SET_FILTER_BY } from "../store/store.js"
 import { PaginationBtns } from "../cmps/PaginationBtns.jsx"
-import { SET_FILTER_BY } from "../store/reducers/contact.reducer.js"
+
 
 export function ContactIndex() {
-        const contacts = useSelector((storeState) => storeState.contactModule.contacts)
-        const isLoading = useSelector(storeState => storeState.contactModule.isLoading)
+        const contacts = useSelector((storeState) => storeState.contacts)
+        const isLoading = useSelector(storeState => storeState.isLoading)
 
 
     //     // Special hook for accessing search-params:
         const [searchParams, setSearchParams] = useSearchParams()
         const defaultFilter = contactService.getFilterFromSearchParams(searchParams)
-        const filterBy = useSelector((storeState) => storeState.contactModule.filterBy)
-        const maxPage = useSelector((storeState) => storeState.contactModule.maxPage)
+        const filterBy = useSelector((storeState) => storeState.filterBy)
+        const maxPage = useSelector((storeState) => storeState.maxPage)
         const dispatch = useDispatch()
 
         useEffect(() => {
@@ -71,7 +73,7 @@ export function ContactIndex() {
                 <h2>Contacts List</h2>
                 <PaginationBtns filterSortBy={filterBy} onChangePageIdx={onChangePageIdx} />
                 {!isLoading ?
-                    <ContactList contacts={contacts} onRemoveContact={onRemoveContact} onToggleContact={onToggleContact} />
+                    <ContactList contacts={contacts} onRemoveContact={onRemoveContact} />
                     : <div>Loading...</div>
                 }
             </section>

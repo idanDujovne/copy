@@ -17,7 +17,6 @@ export function ContactSort({ filterBy, onSetFilterBy }) {
     function handleChange({ target }) {
         const field = target.name
         let value = target.value
-        console.log('field:', field)
 
         switch (target.type) {
             case 'number':

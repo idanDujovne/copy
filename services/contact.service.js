@@ -21,7 +21,8 @@ window.cs = contactService
 
 function query(filterBy = {}) {
     return storageService.query(CONTACT_KEY)
-        .then(contacts => {
+    .then(contacts => {
+        
 
             if (filterBy.fullName) {
                 const regExp = new RegExp(filterBy.fullName, 'i')
@@ -43,7 +44,7 @@ function query(filterBy = {}) {
                 const startIdx = filterBy.pageIdx * PAGE_SIZE;
                 contacts = contacts.slice(startIdx, startIdx + PAGE_SIZE)
             }
-            return Promise.all(getMaxPage(filteredContactsLength))
+            return (getMaxPage(filteredContactsLength))
                 .then(maxPage => {
                     return { contacts, maxPage }
                 })
@@ -65,7 +66,7 @@ function get(contactId) {
 function remove(contactId) {
     return storageService.remove(CONTACT_KEY, contactId)
         .then(() => {
-            return Promise.all(getMaxPage())
+            return (getMaxPage())
                 .then((maxPage) => {
                     return { maxPage }
                 })
@@ -79,7 +80,7 @@ function remove(contactId) {
 function save(contact) {
     return ((contact._id) ? _edit(contact) : _add(contact))
         .then((savedContact) => {
-            return Promise.all(getMaxPage())
+            return (getMaxPage())
                 .then((maxPage) =>
                     ({ maxPage, savedContact })
                 )
@@ -140,7 +141,7 @@ function _createContacts() {
         const fullNames = ['Omri', 'Idan', 'Yosi','Puki','Muki','Shuki']
         for (let i = 0; i < 8; i++) {
             const fullName = fullNames[utilService.getRandomIntInclusive(0, fullNames.length - 1)]
-            contacts.push(_createContact(fullName + (i + 1), utilService.getRandomIntInclusive(1, 10)))
+            contacts.push(_createContact(fullName))
         }
         utilService.saveToStorage(CONTACT_KEY, contacts)
     }

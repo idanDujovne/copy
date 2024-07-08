@@ -1,5 +1,7 @@
 import { contactService } from "../services/contact.service.js"
 
+contactService
+
 const { createStore, compose } = Redux
 
 

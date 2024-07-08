@@ -1,7 +1,8 @@
 
 import { contactService } from "../services/contact.service.js"
 import {showErrorMsg, showSuccessMsg  } from "../services/event-bus.service.js"
-// import { saveContact } from '../store/actions/contact.actions.js'
+import { saveContact } from "../store/actions/contact.actions.js"
+
 
 const { useState, useEffect } = React
 const { useNavigate, useParams } = ReactRouterDOM
@@ -18,7 +19,10 @@ export function ContactEdit() {
 
     function loadContact() {
         contactService.get(params.contactId)
-            .then(setContactToEdit)
+            .then(contact =>{
+                console.log('contact:', contact);
+                setContactToEdit(contact)
+            })
             .catch(err => console.log('err:', err))
     }
 
@@ -29,7 +33,7 @@ export function ContactEdit() {
         switch (target.type) {
             case 'number':
             case 'range':
-                value = +value || ''
+                value = value === '' ? '' : +value
                 break
 
             case 'checkbox':
@@ -55,7 +59,8 @@ export function ContactEdit() {
                 console.log('err:', err)
             })
     }
-
+console.log('contactToEdit.phone:', contactToEdit.phone);
+    
     const { fullName, phone } = contactToEdit
     return (
         <section className="contact-edit">
